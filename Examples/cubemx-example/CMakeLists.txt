@@ -28,7 +28,7 @@
 
 cmake_minimum_required(VERSION 3.13)
 
-set(STM32_DISABLE_CPP_NEW ON)
+set(STM32_NO_DYNAMIC_ALLOCATION ON)
 include(../../cmake/stm32-boilerplate.cmake)
 stm32_fetch_gcc_none_eabi()
 

@@ -29,12 +29,17 @@
  */
 
 #include <stddef.h>
+#include <Stm32BoilerplateConfig.h>
+
+void* you_used_a_dynamic_allocation_dont_do_that();
+void you_used_a_dynamic_deallocation_dont_do_that();
 
 /* We use -Wl,--wrap=malloc,--wrap=free,--wrap=realloc,--wrap=calloc to the linker so we can wrap
  * the toolchain provided versions of malloc and free. In this case we just put an undefined
  * function to raise an error, but in the future we could be more granular about this like allow
  * allocations during system startup only and then disabling them at runtime with a variable flag.
  */
+#if defined(STM32_DISABLE_C_MALLOC)
 // you can use the `__read_FUNCTION` pattern to call the original function
 // void* __real_malloc(size_t);
 void* __wrap_malloc(size_t bytes) {
@@ -42,15 +47,22 @@ void* __wrap_malloc(size_t bytes) {
 	// to call original malloc
 	// return __real_malloc(bytes);
 }
+#endif
 
+#if defined(STM32_DISABLE_C_FREE)
 void __wrap_free(void* addr) {
 	you_used_a_dynamic_deallocation_dont_do_that();
 }
+#endif
 
+#if defined(STM32_DISABLE_C_REALLOC)
 void* __wrap_realloc(void* addr) {
 	return you_used_a_dynamic_allocation_dont_do_that();
 }
+#endif
 
+#if defined(STM32_DISABLE_C_CALLOC)
 void* __wrap_calloc(size_t num, size_t size) {
 	return you_used_a_dynamic_allocation_dont_do_that();
 }
+#endif

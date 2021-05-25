@@ -29,4 +29,10 @@
  */
 
 #cmakedefine STM32_DISABLE_CPP_NEW
+#cmakedefine STM32_DISABLE_CPP_DELETE
+#cmakedefine STM32_DISABLE_C_MALLOC
+#cmakedefine STM32_DISABLE_C_FREE
+#cmakedefine STM32_DISABLE_C_REALLOC
+#cmakedefine STM32_DISABLE_C_CALLOC
+
 #cmakedefine STM32_EMPTY_PURE_VIRTUAL_STUB

@@ -40,6 +40,11 @@ FetchContent_Declare(
 )
 
 function(stm32_fetch_gcc_none_eabi)
+    if(STM32_TOOLCHAIN_PATH)
+        message(INFO "skipping gcc fetch, STM32_TOOLCHAIN_PATH set to: ${STM32_TOOLCHAIN_PATH}")
+        return()
+    endif()
+
     FetchContent_GetProperties(arm-none-eabi POPULATED GCC_POPULATED)
     if(NOT GCC_POPULATED)
         set(FETCHCONTENT_QUIET FALSE) # To see progress

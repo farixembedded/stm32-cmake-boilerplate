@@ -32,13 +32,40 @@ include(${CMAKE_CURRENT_LIST_DIR}/default-build-type.cmake)
 
 include(${CMAKE_CURRENT_LIST_DIR}/fetch-gcc-arm.cmake)
 
-### C++ dynamic allocation disable
-option(STM32_DISABLE_CPP_NEW "Disable c++ new operator at compile time" OFF)
-option(STM32_DISABLE_CPP_DELETE "Disable c++ delete operator at compile time" OFF)
+### Dynamic allocation setup
+# Master option for no dynamic all all
+option(STM32_NO_DYNAMIC_ALLOCATION "Disable all dynamic allocation at compiler time by default (can be overridden individually)" OFF)
+
+# C++ dynamic allocation disable
+option(STM32_DISABLE_CPP_NEW "Disable c++ new operator at compile time" ${STM32_NO_DYNAMIC_ALLOCATION})
+option(STM32_DISABLE_CPP_DELETE "Disable c++ delete operator at compile time" ${STM32_NO_DYNAMIC_ALLOCATION})
 if(STM32_DISABLE_CPP_NEW OR STM32_DISABLE_CPP_DELETE)
     list(APPEND STM32_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/../Src/DynamicMemory/CppDynamicFixes.cpp
     )
+endif()
+
+# C malloc/free dynamic allocation
+option(STM32_DISABLE_C_MALLOC "Disable C malloc with compile time error" ${STM32_NO_DYNAMIC_ALLOCATION})
+option(STM32_DISABLE_C_FREE "Disable C free with compile time error" ${STM32_NO_DYNAMIC_ALLOCATION})
+option(STM32_DISABLE_C_REALLOC "Disable C realloc with compile time error" ${STM32_NO_DYNAMIC_ALLOCATION})
+option(STM32_DISABLE_C_CALLOC "Disable C calloc with compile time error" ${STM32_NO_DYNAMIC_ALLOCATION})
+if(STM32_DISABLE_C_MALLOC OR STM32_DISABLE_C_FREE OR STM32_DISABLE_C_REALLOC OR STM32_DISABLE_C_CALLOC)
+    list(APPEND STM32_SOURCES
+        ${CMAKE_CURRENT_LIST_DIR}/../Src/DynamicMemory/MallocFixes.c
+    )
+    if(STM32_DISABLE_C_MALLOC)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--wrap=malloc")
+    endif()
+    if(STM32_DISABLE_C_FREE)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--wrap=free")
+    endif()
+    if(STM32_DISABLE_C_REALLOC)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--wrap=realloc")
+    endif()
+    if(STM32_DISABLE_C_CALLOC)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--wrap=calloc")
+    endif()
 endif()
 
 
@@ -46,7 +73,6 @@ endif()
 list(APPEND STM32_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../Src/SysCalls/SysCalls.c
 )
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 
 ### Set sane C++ settings for embedded
