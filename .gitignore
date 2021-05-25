@@ -1,0 +1,18 @@
+# Temp: ignore cube
+/STM32CubeG0/
+
+# toolchain folder
+gcc-arm-none-eabi/
+# this seems to be an intermedaite generated sometimes
+ex-arm-none-eabi*/
+
+# build folder
+build-*/
+build/
+
+# Ingnore the central location for cmake dependeicies
+.cmake_deps
+
+# Cmake stuff
+CMakeCache.txt
+CMakeFiles/

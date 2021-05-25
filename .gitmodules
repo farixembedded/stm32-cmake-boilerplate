@@ -1,0 +1,9 @@
+[submodule "stm32-cmake"]
+	path = stm32-cmake
+	url = https://github.com/STMicroelectronics/STM32CubeG0.git
+[submodule "Examples/cubemx-example/STM32CubeG0"]
+	path = Examples/cubemx-example/STM32CubeG0
+	url = https://github.com/STMicroelectronics/STM32CubeG0.git
+[submodule "Examples/cubemx-example/--force"]
+	path = Examples/cubemx-example/--force
+	url = https://github.com/STMicroelectronics/STM32CubeG0.git
