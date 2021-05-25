@@ -70,9 +70,12 @@ endif()
 
 
 ### add the newlib syscalls to the code
-list(APPEND STM32_SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/../Src/SysCalls/SysCalls.c
-)
+option(STM32_INCLUDE_NEWLIB_PORT_STUBS "Include stubs for all newlib port calls" ON)
+if(STM32_INCLUDE_NEWLIB_PORT_STUBS)
+    list(APPEND STM32_SOURCES
+        ${CMAKE_CURRENT_LIST_DIR}/../Src/SysCalls/SysCalls.c
+    )
+endif()
 
 
 ### Set sane C++ settings for embedded
@@ -81,7 +84,10 @@ list(APPEND STM32_SOURCES
 # -fno-non-call-exceptions: C++ exceptions are not thrown from trapping instructions.
 # -fno-rtti: RTTI can cause dynamic allocations and is very resource intensive
 # -fno-use-cxa-atexit: Don't call gcc C style destructors at exit, we never exit
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-non-call-exceptions -fno-rtti -fno-use-cxa-atexit")
+option(STM32_USE_EMBEDDED_CXX_FLAGS "Use vairous C++ flags for embedded (no RTTI, exceptions, etc.)" ON)
+if(STM32_USE_EMBEDDED_CXX_FLAGS)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-non-call-exceptions -fno-rtti -fno-use-cxa-atexit")
+endif()
 
 # Stub out the pure virtual handler on embedded platforms. This can reduce code size
 option(STM32_EMPTY_PURE_VIRTUAL_STUB "Define a stub for g++'s run-time pure virtual call to reduce code size" ON)
@@ -93,97 +99,76 @@ endif()
 
 
 ### Set up compiler errors and warnings to be fairly strict
-set(STM32_COMMON_FLAGS "-Wall -Wno-strict-aliasing -Wno-unused-local-typedefs -Wno-deprecated-declarations -Wno-multichar -Werror")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${STM32_COMMON_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STM32_COMMON_FLAGS} -Werror=suggest-override")
+option(STM32_USE_AGRESSIVE_COMPILER_ERRORS "Turn on fairly agressive compiler errors" ON)
+if(STM32_USE_AGRESSIVE_COMPILER_ERRORS)
+    set(STM32_COMMON_FLAGS "-Wall -Wno-strict-aliasing -Wno-unused-local-typedefs -Wno-deprecated-declarations -Wno-multichar -Werror")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${STM32_COMMON_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STM32_COMMON_FLAGS} -Werror=suggest-override")
+endif()
+
 
 ### Set function sections and garbage collection during linking
 # Put each function in it's own section and then have the linker run garbage collection
 # This will safely prune unused code more throughly to reduce flash usage.
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections")
-set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} --gc-sections")
+option(STM32_USE_FUNCTION_SECTION "Use function sections and garbage collecion to reduce code size" ON)
+if(STM32_USE_FUNCTION_SECTION)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections")
+    set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} --gc-sections")
+endif()
+
+
+## Generate stack usage info
+option(STM32_GENERATE_STACK_USAGE "Generate stack usage and call graph for static stack analysis" ON)
+if(STM32_GENERATE_STACK_USAGE)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fstack-usage -fcallgraph-info")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fstack-usage -fcallgraph-info")
+endif()
+
+ # The following lines enable link time optimizaions. This causes issues with static stack analysis.
+## Link time optimizaion
+option(STM32_ENABLE_LTO "Turn on link time optimizaions" OFF)
+if(STM32_ENABLE_LTO)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -flto")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
+    set(CMAKE_LD_FLAGS "${CMAKE_CXX_FLAGS} -flto")
+endif()
+
+# Check if LTO amd stack usage are on together
+if(STM32_ENABLE_LTO AND STM32_GENERATE_STACK_USAGE)
+    message(FATAL_ERROR "LTO and stack usage cannot be enabled together.")
+endif()
 
 
 ### Set linker output for memory usage
 # Add a map output and memory usage printing to the linker
 # the size print output gives a nice percentage of ram and flash usage to keep an eye on
 # the map file is useful for seeing exactly where ram and flash usage is going
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Map=output.map,--print-memory-usage")
+option(STM32_GENERTE_MAP_AND_MEM_USAGE "Genearte a linker map file and print memory usage" ON)
+if(STM32_GENERTE_MAP_AND_MEM_USAGE)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Map=output.map,--print-memory-usage")
+endif()
 
 
 ### Force color output in diagnostics. If we ever go to CI we might wnat to detect that and turn off in those envrionments
 # TODO: Give this an option
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color=always")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
-set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} -fdiagnostics-color=always")
+option(STM32_FORCE_GCC_COLOR_OUTPUT "Force GCC to do color output" ON)
+if(STM32_FORCE_GCC_COLOR_OUTPUT)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color=always")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
+    set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} -fdiagnostics-color=always")
+endif()
 
 
 ### Add local FreeRTOS dir to search path so things compile
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../Src/FreeRTOS/)
 
 
-### setup the configure file
+### generate the configure file
 # Do this last so we get all the settings correct
 configure_file(${CMAKE_CURRENT_LIST_DIR}/../Src/Stm32BoilerplateConfig.h.in config_output/Stm32BoilerplateConfig.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/config_output)
 
-
-# # set(STM32_CUBE_G0_PATH ../${CMAKE_CURRENT_SOURCE_DIR}/STM32CubeG0/)
-# # set(FREERTOS_PATH ${STM32_CUBE_G0_PATH}/Middlewares/Third_Party/FreeRTOS/)
-
-# if (DEFINED STM32_CUBEMX_PATH)
-#     list(APPEND STM32_BOILERPLATE_SOURCES
-#         ${STM32_CUBEMX_PATH}/Core/Src/main.c
-#         ${STM32_CUBEMX_PATH}/Core/Src/stm32g0xx_hal_msp.c
-#         ${STM32_CUBEMX_PATH}/Core/Src/stm32g0xx_it.c
-#         ${STM32_CUBEMX_PATH}/Core/Src/system_stm32g0xx.c
-#     )
-# endif()
-
-# add_library(
-#     # Library name
-#     stm32_boilerplate
-#     STATIC
-#     ${STM32_BOILERPLATE_SOURCES}
-# )
-
-# target_include_directories(stm32_boilerplate
-#     PUBLIC
-#     ${STM32_CUBEMX_PATH}/Core/Inc/
-# )
-
-
-
-# #     rt-micro-cubemx/Core/Inc/
-
-# #     # Application includes
-# #     Src/
-# # )
-
-
-# # project(rt-micro C CXX ASM)
-# # # enable C++ 17
-# # set(CMAKE_CXX_STANDARD 17)
-
-# # # import packages we'll be using
-# # find_package(CMSIS COMPONENTS STM32G031K8T6U REQUIRED)
-# # find_package(HAL COMPONENTS STM32G031K8T6U REQUIRED)
-# # find_package(FreeRTOS COMPONENTS ARM_CM0 REQUIRED)
-
-# # set(PROJECT_SOURCES
-# #     Src/Tasks/BlinkyTask.cpp
-
-# #     Src/SystemConfig/FreeRTOSHooks.c
-# #     Src/SystemConfig/MainSetupHook.c
-# #     Src/SystemConfig/SysCalls.c
-
-# #     rt-micro-cubemx/Core/Src/main.c
-# #     rt-micro-cubemx/Core/Src/gpio.c
-# #     rt-micro-cubemx/Core/Src/usart.c
-# #     rt-micro-cubemx/Core/Src/stm32g0xx_hal_timebase_tim.c
-# #     rt-micro-cubemx/Core/Src/stm32g0xx_it.c
-# # )
 
 # # add_executable(rt-micro ${PROJECT_SOURCES})
 
@@ -225,34 +210,3 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/config_output)
 #     Src/SystemConfig
 # )
 
-# # Force color output in diagnostics. If we ever go to CI we might wnat to detect that and turn off in those envrionments
-# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color=always")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
-# set(CMAKE_LD_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
-
-# # Some settings to make C++ more freiendly for embedded systems
-# # -fno-exceptions: Exceptions are non-deterministic and can cause dynamic allocations
-# # -fno-non-call-exceptions: C++ exceptions are not thrown from trapping instructions.
-# # -fno-rtti: RTTI can cause dynamic allocations and is very resource intensive
-# # -fno-use-cxa-atexit: Don't call gcc C style destructors at exit, we never exit
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-non-call-exceptions -fno-rtti -fno-use-cxa-atexit")
-
-# # Put each function in it's own section and then have the linker run garbage collection
-# # This will safely prune unused code more throughly to reduce flash usage.
-# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections")
-# set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} --gc-sections")
-
-# # generate stack useage information
-# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fstack-usage -fcallgraph-info")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fstack-usage -fcallgraph-info")
-
-# # The following lines enable link time optimizaions. This causes issues with static stack analysis.
-# # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -flto")
-# # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
-# # set(CMAKE_LD_FLAGS "${CMAKE_CXX_FLAGS} -flto")
-
-# # Add a map output and memory usage printing to the linker
-# # the size print output gives a nice percentage of ram and flash usage to keep an eye on
-# # the map file is useful for seeing exactly where ram and flash usage is going
-# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Map=output.map,--print-memory-usage")
