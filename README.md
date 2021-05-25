@@ -2,6 +2,8 @@
 
 This repo adds additional source and CMake files to make creating embedded C and C++ projects for
 the STM32. It is built on top of the [stm32-cmake](https://github.com/ObKo/stm32-cmake) project.
+Note that this project is only tested on Linux right now, but may work on others with varying
+success.
 
 ## List of features
 * Disable dynamic memory allocations at compile time in both C and C++

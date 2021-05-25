@@ -29,3 +29,4 @@
  */
 
 #cmakedefine STM32_DISABLE_CPP_NEW
+#cmakedefine STM32_EMPTY_PURE_VIRTUAL_STUB

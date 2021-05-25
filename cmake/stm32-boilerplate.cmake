@@ -58,7 +58,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-non-call-exceptions -fno-rtti -fno-use-cxa-atexit")
 
 # Stub out the pure virtual handler on embedded platforms. This can reduce code size
-option(STM32_EMPTY_PURE_VIRTUAL_STUB ON)
+option(STM32_EMPTY_PURE_VIRTUAL_STUB "Define a stub for g++'s run-time pure virtual call to reduce code size" ON)
 if(STM32_EMPTY_PURE_VIRTUAL_STUB)
 list(APPEND STM32_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../Src/CppFixes/CppFixes.cpp
@@ -66,15 +66,17 @@ list(APPEND STM32_SOURCES
 endif()
 
 
+### Set up compiler errors and warnings to be fairly strict
+set(STM32_COMMON_FLAGS "-Wall -Wno-strict-aliasing -Wno-unused-local-typedefs -Wno-deprecated-declarations -Wno-multichar -Werror")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${STM32_COMMON_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STM32_COMMON_FLAGS} -Werror=suggest-override")
+
 ### Set function sections and garbage collection during linking
 # Put each function in it's own section and then have the linker run garbage collection
 # This will safely prune unused code more throughly to reduce flash usage.
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections")
 set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} --gc-sections")
-
-### setup the configure file
-configure_file(${CMAKE_CURRENT_LIST_DIR}/../Src/Stm32BoilerplateConfig.h.in Stm32BoilerplateConfig.h)
 
 
 ### Set linker output for memory usage
@@ -84,14 +86,23 @@ configure_file(${CMAKE_CURRENT_LIST_DIR}/../Src/Stm32BoilerplateConfig.h.in Stm3
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Map=output.map,--print-memory-usage")
 
 
-
 ### Force color output in diagnostics. If we ever go to CI we might wnat to detect that and turn off in those envrionments
 # TODO: Give this an option
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color=always")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
 set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} -fdiagnostics-color=always")
 
+
+### Add local FreeRTOS dir to search path so things compile
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../Src/FreeRTOS/)
+
+
+### setup the configure file
+# Do this last so we get all the settings correct
+configure_file(${CMAKE_CURRENT_LIST_DIR}/../Src/Stm32BoilerplateConfig.h.in config_output/Stm32BoilerplateConfig.h)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/config_output)
+
+
 # # set(STM32_CUBE_G0_PATH ../${CMAKE_CURRENT_SOURCE_DIR}/STM32CubeG0/)
 # # set(FREERTOS_PATH ${STM32_CUBE_G0_PATH}/Middlewares/Third_Party/FreeRTOS/)
 

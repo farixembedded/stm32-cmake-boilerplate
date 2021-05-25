@@ -29,10 +29,17 @@
  */
 
 #pragma once
-/* This is a stub of CMISI OSv2 interface
- * CubeMX only supports including FreeRTOS through CMSIS, but we don't want the
- * overhead. Stub out functions to get things compiling.
+/* This is a stub of CMISI OSv2 interface CubeMX only supports including FreeRTOS through CMSIS, but
+ * we don't want the overhead. Stub out or provide simple implementations of functions to get things
+ * compiling and running.
  */
+#include <FreeRTOS.h>
+#include <task.h>
 
-void osKernelInitialize() {}
-void osKernelStart() {}
+void osKernelInitialize() {
+	// noop
+}
+
+void osKernelStart() {
+	vTaskStartScheduler();
+}

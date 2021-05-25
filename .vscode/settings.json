@@ -9,9 +9,9 @@
     "files.watcherExclude": {
         // don't watch build folders for changes.
         // You rearely need this and it eats a ton of memory
-        "build/**": true,
-        "build-*/**": true,
+        // "build/**": true,
+        // "build-*/**": true,
     },
     "git.ignoreLimitWarning": true,
-    "cmake.sourceDirectory": "${workspaceFolder}/Examples/simple-example"
+    "cmake.sourceDirectory": "${workspaceFolder}/Examples/cubemx-example"
 }

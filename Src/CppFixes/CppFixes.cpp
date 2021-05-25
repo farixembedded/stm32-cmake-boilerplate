@@ -30,6 +30,7 @@
 
 // This file has fixes to the C++ implementation that take care of various issues on embedded
 // systems.
+#include <Stm32BoilerplateConfig.h>
 
 // When any pure virtual methods are used in the program the compiler inserts a
 // `__cxa_pure_virtual()` method. This method normally comes from libsupc++. The implementation
@@ -40,7 +41,9 @@
 //
 // That implementation is defined weekly so we can override it here with our own to save memory.
 // we just go into an infinite loop so we can trap that in a debugger.
+#if defined(STM32_EMPTY_PURE_VIRTUAL_STUB)
 extern "C" void __cxa_pure_virtual(void) {
 	while (1)
 		;
 }
+#endif
