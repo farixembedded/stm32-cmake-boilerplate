@@ -34,5 +34,5 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -DSTM32_TOOLHAIN_PATH=$GCC_PATH
+        cmake .. -DSTM32_TOOLCHAIN_PATH=$GCC_PATH
         cmake --build .
