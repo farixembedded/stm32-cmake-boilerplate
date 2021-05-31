@@ -1,0 +1,20 @@
+name: Tests
+
+on: [push]
+
+jobs:
+  test-ubuntu:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Configure examples/blinky-example
+      shell: bash
+      working-directory: ${{runner.workspace}}/Examples/blinky-example/build
+      run: cmake ..
+
+    - name: Build examples/blinky-example
+      working-directory: ${{runner.workspace}}/examples/blinky-example/build
+      shell: bash
+      run: camke --build .
