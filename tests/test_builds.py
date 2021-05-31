@@ -62,7 +62,7 @@ class Builder:
         if 'STM32_TOOLCHAIN_PATH' in os.environ:
             toolchain_define = f"-DSTM32_TOOLCHAIN_PATH={os.environ['STM32_TOOLCHAIN_PATH']}"
 
-        subprocess.check_call(f"cmake {self.project_path} -B {self.build_path} {toolchain_define}", shell=True)
+        subprocess.check_call(f"cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON {self.project_path} -B {self.build_path} {toolchain_define}", shell=True)
         subprocess.check_call(f"cmake --build {self.build_path}", shell=True)
 
 
