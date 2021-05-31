@@ -65,7 +65,7 @@ class Builder:
         subprocess.check_call(f"cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON {self.project_path} -B {self.build_path} {toolchain_define}", shell=True)
         subprocess.check_call(f"cmake --build {self.build_path}", shell=True)
 
-        subprocess.check_call(f"cat {self.build_path}/output.map")
+        subprocess.check_call(f"cat {self.build_path}/output.map", shell=True)
 
 
 @pytest.fixture(params=[
