@@ -65,13 +65,11 @@ class Builder:
         subprocess.check_call(f"cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON {self.project_path} -B {self.build_path} {toolchain_define}", shell=True)
         subprocess.check_call(f"cmake --build {self.build_path}", shell=True)
 
-        subprocess.check_call(f"cat {self.build_path}/output.map", shell=True)
-
 
 @pytest.fixture(params=[
     ("Examples/simple-example", 'simple-example', '6298a0669961fbf7a1062cece9a7e130'),
-    # ("Examples/cubemx-example", 'cubemx-example', 'c240fc7f76682049a2e0e823dd9c3af2'),
-    # ("Examples/blinky-example", "blinky-example", "0188f3a1b30e979c37c94c8f4414ee69"),
+    ("Examples/cubemx-example", 'cubemx-example', 'c78dcc2ed6d66777c99f234c41a1928a'),
+    ("Examples/blinky-example", "blinky-example", "31b2914605e44381aeddb5f350dec5d2"),
     ],
     ids=lambda x: x[0],
     scope='module')

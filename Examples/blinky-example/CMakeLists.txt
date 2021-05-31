@@ -57,6 +57,8 @@ add_executable(${PROJECT_NAME}
     ${STM32_SOURCES}
 )
 
+add_binary_output(${PROJECT_NAME})
+
 target_link_libraries(${PROJECT_NAME}
     HAL::STM32::G0::RCC
     HAL::STM32::G0::GPIO

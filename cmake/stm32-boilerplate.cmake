@@ -170,6 +170,15 @@ configure_file(${CMAKE_CURRENT_LIST_DIR}/../Src/Stm32BoilerplateConfig.h.in conf
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/config_output)
 
 
+### Generate hex and bin outputs
+# Helper function for making binary output
+function(add_binary_output TARGET)
+    add_custom_command(TARGET ${TARGET}
+            POST_BUILD
+            COMMAND ${CMAKE_OBJCOPY} -O ihex ${PROJECT_NAME}.elf ${PROJECT_NAME}.hex
+            COMMAND ${CMAKE_OBJCOPY} -O binary ${PROJECT_NAME}.elf ${PROJECT_NAME}.bin)
+endfunction(())
+
 # # add_executable(rt-micro ${PROJECT_SOURCES})
 
 # # # We use a custom linker script so we can tune the stack and heap
