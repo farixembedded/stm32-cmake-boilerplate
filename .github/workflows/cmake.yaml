@@ -16,25 +16,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: recursive
 
-    - name: Checkout submodules
-      run: git submodule update --init --recursive
-
-    # Runs a single command using the runners shell
-    - name: Run a one-line script
-      run: echo Hello, world!
-
-    - name: Configure examples/blinky-example
+    - name: Configure Examples/blinky-example
       working-directory: Examples/blinky-example
       run: |
-        which cmake
-        echo hello world
         mkdir build
         cd build
-        which cmake
         cmake ..
 
-    - name: Build examples/blinky-example
-      working-directory: examples/blinky-example/build
+    - name: Build Examples/blinky-example
+      working-directory: Examples/blinky-example/build
       shell: bash
       run: camke --build .
