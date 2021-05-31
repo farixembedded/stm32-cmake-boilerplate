@@ -33,8 +33,8 @@ include(FetchContent)
 
 FetchContent_Declare(
     arm-none-eabi
-    #URL      https://developer.arm.com/-/media/Files/downloads/gnu-rm/10-2020q4/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
-    URL       file:///home/mcampbell/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
+    URL      https://developer.arm.com/-/media/Files/downloads/gnu-rm/10-2020q4/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
+    #URL       file:///home/mcampbell/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
     #URL_HASH MD5=8312c4c91799885f222f663fc81f9a31
     #SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/gcc-arm-none-eabi
 )
