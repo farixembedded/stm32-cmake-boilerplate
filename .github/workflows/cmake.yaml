@@ -32,23 +32,17 @@ jobs:
     - name: Simple example
       working-directory: Examples/simple-example
       run: |
-        mkdir build
-        cd build
-        cmake .. -DSTM32_TOOLCHAIN_PATH=$GCC_PATH
-        cmake --build .
+        cmake . -DSTM32_TOOLCHAIN_PATH=$GCC_PATH -B build
+        cmake --build build
 
     - name: Blinky example
       working-directory: Examples/blinky-example
       run: |
-        mkdir build
-        cd build
-        cmake .. -DSTM32_TOOLCHAIN_PATH=$GCC_PATH
-        cmake --build .
+        cmake . -DSTM32_TOOLCHAIN_PATH=$GCC_PATH -B build
+        cmake --build build
 
     - name: CubeMX example
       working-directory: Examples/cubemx-example
       run: |
-        mkdir build
-        cd build
-        cmake .. -DSTM32_TOOLCHAIN_PATH=$GCC_PATH
-        cmake --build .
+        cmake . -DSTM32_TOOLCHAIN_PATH=$GCC_PATH -B build
+        cmake --build build

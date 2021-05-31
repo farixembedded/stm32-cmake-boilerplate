@@ -9,6 +9,7 @@ ex-arm-none-eabi*/
 # build folder
 build-*/
 build/
+/ci-build/
 
 # Ingnore the central location for cmake dependeicies
 .cmake_deps
