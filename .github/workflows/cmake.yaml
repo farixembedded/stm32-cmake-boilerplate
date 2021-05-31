@@ -34,4 +34,4 @@ jobs:
         tar xf toolchain.tar.bz2
 
     - name: Simple example
-      run: pytest-3 tests
+      run: pytest-3 tests -vs

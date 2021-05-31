@@ -11,6 +11,9 @@ build-*/
 build/
 /ci-build/
 
+# python related
+*.pyc
+
 # Ingnore the central location for cmake dependeicies
 .cmake_deps
 
