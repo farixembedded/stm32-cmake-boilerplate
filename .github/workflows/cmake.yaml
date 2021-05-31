@@ -1,0 +1,28 @@
+name: Tests
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  test-ubuntu:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Configure examples/blinky-example
+      shell: bash
+      working-directory: ${{runner.workspace}}/Examples/blinky-example/build
+      run: cmake ..
+
+    - name: Build examples/blinky-example
+      working-directory: ${{runner.workspace}}/examples/blinky-example/build
+      shell: bash
+      run: camke --build .
