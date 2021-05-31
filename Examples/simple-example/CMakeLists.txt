@@ -37,6 +37,7 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../stm32-cmake/cmake/stm
 project(simple-example C CXX ASM)
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
+
 # stm32_fetch_cmsis(G0)
 # stm32_fetch_hal(G0)
 set(STM32_CUBE_G0_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cubemx-example/STM32CubeG0/)
@@ -56,6 +57,12 @@ add_executable(${PROJECT_NAME}
     main.c
     ${STM32_SOURCES}
 )
+
+### Generate hex and bin outputs
+add_custom_command(TARGET ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} -O ihex ${PROJECT_NAME}.elf ${PROJECT_NAME}.hex
+        COMMAND ${CMAKE_OBJCOPY} -O binary ${PROJECT_NAME}.elf ${PROJECT_NAME}.bin)
 
 target_link_libraries(${PROJECT_NAME}
     CMSIS::STM32::G031K8

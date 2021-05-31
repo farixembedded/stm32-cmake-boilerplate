@@ -46,12 +46,12 @@ def md5(path: Path):
 
 
 class Builder:
-    def __init__(self, project_path, elf_name=None, elf_md5=None):
+    def __init__(self, project_path, project_name=None, bin_md5=None):
         self.name = self.__class__.__name__
         self.project_path = Path(project_path)
         self.build_path = CI_BUILD_FOLDER / project_path
-        self.elf_path = self.build_path / elf_name
-        self.elf_md5 = elf_md5
+        self.project_name = project_name
+        self.bin_md5 = bin_md5
 
         try:
             shutil.rmtree(self.build_path)
@@ -69,9 +69,9 @@ class Builder:
 
 
 @pytest.fixture(params=[
-    ("Examples/simple-example", 'simple-example.elf', '8c9f78053d79fca8214e9d458adcbd6d'),
-    # ("Examples/cubemx-example", 'cubemx-example.elf', 'c240fc7f76682049a2e0e823dd9c3af2'),
-    # ("Examples/blinky-example", "blinky-example.elf", "0188f3a1b30e979c37c94c8f4414ee69"),
+    ("Examples/simple-example", 'simple-example', '6298a0669961fbf7a1062cece9a7e130'),
+    # ("Examples/cubemx-example", 'cubemx-example', 'c240fc7f76682049a2e0e823dd9c3af2'),
+    # ("Examples/blinky-example", "blinky-example", "0188f3a1b30e979c37c94c8f4414ee69"),
     ],
     ids=lambda x: x[0],
     scope='module')
@@ -81,8 +81,8 @@ def build(request):
 
 class TestBuild:
     def test_output_is_elf(self, build: Builder):
-        output = subprocess.check_output(f"file {build.elf_path}", shell=True).decode()
+        output = subprocess.check_output(f"file {build.build_path / build.project_name}.elf", shell=True).decode()
         assert "ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV)" in output
 
     def test_output_is_binary_reproduceable(self, build: Builder):
-        assert md5(build.elf_path) == build.elf_md5
+        assert md5(build.build_path / f'{build.project_name}.bin' ) == build.bin_md5
