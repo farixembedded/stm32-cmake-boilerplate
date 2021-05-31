@@ -1,5 +1,7 @@
 # STM32 Cmake Boilerplate
 
+[![Tests](https://github.com/fractalembedded/stm32-cmake-boilerplate/actions/workflows/cmake.yaml/badge.svg)](https://github.com/fractalembedded/stm32-cmake-boilerplate/actions/workflows/cmake.yaml)
+
 This repo adds additional source and CMake files to make creating embedded C and C++ projects for
 the STM32. It is built on top of the [stm32-cmake](https://github.com/ObKo/stm32-cmake) proje
 
