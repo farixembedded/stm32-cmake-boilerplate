@@ -18,10 +18,12 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Configure examples/blinky-example
-      shell: bash
       working-directory: ${{runner.workspace}}/Examples/blinky-example
       run: |
-        mkdir build && cd build
+        which cmake
+        echo hello world
+        mkdir build
+        cd build
         which cmake
         cmake ..
 
