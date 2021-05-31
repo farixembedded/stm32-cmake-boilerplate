@@ -22,6 +22,7 @@ jobs:
       working-directory: ${{runner.workspace}}/Examples/blinky-example
       run: |
         mkdir build && cd build
+        which cmake
         cmake ..
 
     - name: Build examples/blinky-example
