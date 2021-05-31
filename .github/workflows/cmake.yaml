@@ -23,7 +23,7 @@ jobs:
       run: echo Hello, world!
 
     - name: Configure examples/blinky-example
-      working-directory: ${{runner.workspace}}/Examples/blinky-example
+      working-directory: Examples/blinky-example
       run: |
         which cmake
         echo hello world
@@ -33,6 +33,6 @@ jobs:
         cmake ..
 
     - name: Build examples/blinky-example
-      working-directory: ${{runner.workspace}}/examples/blinky-example/build
+      working-directory: examples/blinky-example/build
       shell: bash
       run: camke --build .
