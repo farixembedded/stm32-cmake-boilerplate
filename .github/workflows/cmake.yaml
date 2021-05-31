@@ -29,4 +29,4 @@ jobs:
     - name: Build Examples/blinky-example
       working-directory: Examples/blinky-example/build
       shell: bash
-      run: camke --build .
+      run: cmake --build .
