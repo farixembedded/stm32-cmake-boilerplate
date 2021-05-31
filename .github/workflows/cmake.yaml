@@ -19,8 +19,10 @@ jobs:
 
     - name: Configure examples/blinky-example
       shell: bash
-      working-directory: ${{runner.workspace}}/Examples/blinky-example/build
-      run: cmake ..
+      working-directory: ${{runner.workspace}}/Examples/blinky-example
+      run: |
+        mkdir build && cd build
+        cmake ..
 
     - name: Build examples/blinky-example
       working-directory: ${{runner.workspace}}/examples/blinky-example/build
