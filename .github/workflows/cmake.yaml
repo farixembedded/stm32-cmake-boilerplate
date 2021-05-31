@@ -29,8 +29,24 @@ jobs:
         wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10-2020q4/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2 -O toolchain.tar.bz2
         tar xf toolchain.tar.bz2
 
-    - name: Blinky example with fetch
+    - name: Simple example
+      working-directory: Examples/simple-example
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DSTM32_TOOLCHAIN_PATH=$GCC_PATH
+        cmake --build .
+
+    - name: Blinky example
       working-directory: Examples/blinky-example
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DSTM32_TOOLCHAIN_PATH=$GCC_PATH
+        cmake --build .
+
+    - name: CubeMX example
+      working-directory: Examples/cubemx-example
       run: |
         mkdir build
         cd build
