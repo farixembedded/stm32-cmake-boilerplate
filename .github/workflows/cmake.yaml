@@ -34,4 +34,6 @@ jobs:
         tar xf toolchain.tar.bz2
 
     - name: Simple example
-      run: pytest-3 tests -vs
+      run: |
+        cmake --version
+        pytest-3 tests -vs
