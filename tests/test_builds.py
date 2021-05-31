@@ -69,7 +69,7 @@ class Builder:
 
 
 @pytest.fixture(params=[
-    ("Examples/simple-example", 'simple-example.elf', '535c56b0d3e47a3c4d954478c567dfc6'),
+    ("Examples/simple-example", 'simple-example.elf', '8c9f78053d79fca8214e9d458adcbd6d'),
     # ("Examples/cubemx-example", 'cubemx-example.elf', 'c240fc7f76682049a2e0e823dd9c3af2'),
     # ("Examples/blinky-example", "blinky-example.elf", "0188f3a1b30e979c37c94c8f4414ee69"),
     ],

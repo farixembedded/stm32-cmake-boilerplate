@@ -37,8 +37,9 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../stm32-cmake/cmake/stm
 project(simple-example C CXX ASM)
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
-stm32_fetch_cmsis(G0)
-stm32_fetch_hal(G0)
+# stm32_fetch_cmsis(G0)
+# stm32_fetch_hal(G0)
+set(STM32_CUBE_G0_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cubemx-example/STM32CubeG0/)
 
 # import packages we'll be using
 find_package(CMSIS COMPONENTS STM32G031K8T6U REQUIRED)
