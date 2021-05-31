@@ -10,6 +10,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  GCC_PATH: /tmp/gcc-arm-none-eabi-10-2020-q4-major
+
 jobs:
   test-ubuntu:
     runs-on: ubuntu-20.04
@@ -19,14 +23,16 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Configure Examples/blinky-example
+    - name: Fetch toolchain for reuse
+      run: |
+        cd
+        wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10-2020q4/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2 -o toolchain.tar.bz2
+        tar xf toolchain.tar.bz2
+
+    - name: Blinky example with fetch
       working-directory: Examples/blinky-example
       run: |
         mkdir build
         cd build
-        cmake ..
-
-    - name: Build Examples/blinky-example
-      working-directory: Examples/blinky-example/build
-      shell: bash
-      run: cmake --build .
+        cmake .. -DSTM32_TOOLHAIN_PATH=$GCC_PATH
+        cmake --build .
