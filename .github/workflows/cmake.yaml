@@ -12,7 +12,7 @@ on:
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  GCC_PATH: /tmp/gcc-arm-none-eabi-10-2020-q4-major
+  STM32_TOOLCHAIN_PATH: /tmp/gcc-arm-none-eabi-10-2020-q4-major
 
 jobs:
   test-ubuntu:
@@ -23,6 +23,10 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Install pre-reqs
+      working-directory: Examples/simple-example
+      run: sudo apt-get install python3-pytest
+
     - name: Fetch toolchain for reuse
       run: |
         cd /tmp
@@ -30,19 +34,4 @@ jobs:
         tar xf toolchain.tar.bz2
 
     - name: Simple example
-      working-directory: Examples/simple-example
-      run: |
-        cmake . -DSTM32_TOOLCHAIN_PATH=$GCC_PATH -B build
-        cmake --build build
-
-    - name: Blinky example
-      working-directory: Examples/blinky-example
-      run: |
-        cmake . -DSTM32_TOOLCHAIN_PATH=$GCC_PATH -B build
-        cmake --build build
-
-    - name: CubeMX example
-      working-directory: Examples/cubemx-example
-      run: |
-        cmake . -DSTM32_TOOLCHAIN_PATH=$GCC_PATH -B build
-        cmake --build build
+      run: pytest-3 tests

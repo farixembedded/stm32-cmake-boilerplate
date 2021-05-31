@@ -46,7 +46,7 @@ def md5(path: Path):
 
 
 class Builder:
-    def __init__(self, project_path, elf_name, elf_md5):
+    def __init__(self, project_path, elf_name=None, elf_md5=None):
         self.name = self.__class__.__name__
         self.project_path = Path(project_path)
         self.build_path = CI_BUILD_FOLDER / project_path
