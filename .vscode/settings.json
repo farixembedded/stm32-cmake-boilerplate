@@ -1,0 +1,20 @@
+{
+    "cmake.generator": "Ninja",
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "cmake.buildDirectory": "${workspaceFolder}/build-${buildType}",
+    "files.exclude": {
+        ".cmake_deps": true,
+        "gcc-arm-none-eabi": true,
+    },
+    "files.watcherExclude": {
+        // don't watch build folders for changes.
+        // You rearely need this and it eats a ton of memory
+        // "build/**": true,
+        // "build-*/**": true,
+    },
+    "git.ignoreLimitWarning": true,
+    "cmake.sourceDirectory": "${workspaceFolder}/Examples/cubemx-example",
+    "files.associations": {
+        "stm32boilerplateconfig.h": "c"
+    }
+}
