@@ -52,7 +52,7 @@ The workflow for using it is as follows:
   * Set 'Toolchain / IDE' to 'Makefile'
   * Go to the 'Code Generator' tab on the left.
   * Set 'Add necessary library files as references in the toolchain project configuration file'
-  * Set 'Generate peripheral initialization as a pari of .c/.h files per peripheral'
+  * Set 'Generate peripheral initialization as a pair of .c/.h files per peripheral'
   * Save the project ang then generate the code. You can then check it into revision control.
 
 
@@ -66,6 +66,22 @@ TBD
 TBD
 
 
+# Developers
+
+## Running tests
+
+Python is used as a testing framework to make sure all cases are working as expected for this boiler
+plate project. GitHub actions are used to check for passing builds before merging, but you can also
+run them locally.
+
+```sh
+# on ubuntu install some pre reqs
+sudo apt-get install python3-pytest
+
+# run the tests
+pytest-3 tests -vs
+```
+
 ## Contributing Pull Requests
 
 Pull Requests are welcome! If you heave a bugfix or improvement, feel free to open a PR. Just keep
@@ -74,3 +90,4 @@ tolerated.
 
 Design considerations to keep in mind:
 * All new features must be configurable from CMake with a sane default.
+* Add test coverage where possible (see above)
