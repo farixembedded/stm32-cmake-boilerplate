@@ -67,9 +67,9 @@ class Builder:
 
 
 @pytest.fixture(params=[
-    ("Examples/simple-example", 'simple-example', '6298a0669961fbf7a1062cece9a7e130'),
-    ("Examples/cubemx-example", 'cubemx-example', 'c78dcc2ed6d66777c99f234c41a1928a'),
-    ("Examples/blinky-example", "blinky-example", "31b2914605e44381aeddb5f350dec5d2"),
+    ("Examples/simple-example", 'simple-example', '2ff17a4d70e5831c93c028f121d5ff7d'),
+    ("Examples/cubemx-example", 'cubemx-example', 'f54da2eff644d65e73fc00fb1853d41c'),
+    ("Examples/blinky-example", "blinky-example", "99b87c1f7c0bca5b6e324717ddf7a34f"),
     ],
     ids=lambda x: x[0],
     scope='module')
