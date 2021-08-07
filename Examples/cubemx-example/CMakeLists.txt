@@ -29,6 +29,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 set(STM32_NO_DYNAMIC_ALLOCATION ON)
+set(STM32_FREERTOS_CMSIS_STUBS ON)
 include(../../cmake/stm32-boilerplate.cmake)
 stm32_fetch_gcc_none_eabi()
 

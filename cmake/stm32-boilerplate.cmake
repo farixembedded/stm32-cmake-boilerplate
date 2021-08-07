@@ -160,8 +160,15 @@ if(STM32_FORCE_GCC_COLOR_OUTPUT)
 endif()
 
 
-### Add local FreeRTOS dir to search path so things compile
-include_directories(${CMAKE_CURRENT_LIST_DIR}/../Src/FreeRTOS/)
+### FreeRTOS related
+# Enable RTOS CMSIS stubs that allow you to use CubeMX generated FreeRTOS without full CMSIS
+# This is useful if you want to use CubeMX to generate FreeRTOS code, but you don't want the full overhead of CMSIS.
+# option(STM32_FORCE_GCC_COLOR_OUTPUT "Force GCC to do color output" ON)
+option(STM32_FREERTOS_CMSIS_STUBS "Enable FreeRTOS CMSIS stubs" OFF)
+if(STM32_FREERTOS_CMSIS_STUBS)
+    # Add local FreeRTOS dir to search path so things compile
+    include_directories(${CMAKE_CURRENT_LIST_DIR}/../Src/FreeRTOS/)
+endif()
 
 
 ### generate the configure file
