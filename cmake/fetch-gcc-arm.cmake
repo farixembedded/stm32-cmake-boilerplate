@@ -40,8 +40,16 @@ FetchContent_Declare(
 )
 
 function(stm32_fetch_gcc_none_eabi)
-    if(STM32_TOOLCHAIN_PATH)
-        message(INFO "skipping gcc fetch, STM32_TOOLCHAIN_PATH set to: ${STM32_TOOLCHAIN_PATH}")
+    # Allow env var to act as a backup to one set in CMake
+    if(NOT DEFINED STM32_TOOLCHAIN_PATH AND DEFINED ENV{STM32_TOOLCHAIN_PATH})
+        # Set in both local and parent scope
+        set(STM32_TOOLCHAIN_PATH "$ENV{STM32_TOOLCHAIN_PATH}")
+        set(STM32_TOOLCHAIN_PATH "${STM32_TOOLCHAIN_PATH}" PARENT_SCOPE)
+        message(STATUS "Setting gcc path from envrionment var")
+    endif()
+
+    if(DEFINED STM32_TOOLCHAIN_PATH)
+        message(STATUS "skipping gcc fetch, STM32_TOOLCHAIN_PATH set to: ${STM32_TOOLCHAIN_PATH}")
         return()
     endif()
 
